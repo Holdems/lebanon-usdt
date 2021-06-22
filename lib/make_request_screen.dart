@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lebanon_usdt/validator.dart';
@@ -6,6 +5,7 @@ import 'package:lebanon_usdt/validator.dart';
 bool firstSubmit = false;
 bool priceGotDeleted = false;
 bool isPositiveRate = true;
+bool isEnabled = false;
 
 AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
@@ -53,9 +53,24 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
     return amount * answer;
   }
 
+  changeSubmitButtonColor() {
+    if (totalPriceController.text.isNotEmpty &&
+        amountController.text.isNotEmpty &&
+        rateController.text.isNotEmpty) {
+      setState(() {
+        isEnabled = true;
+      });
+    } else {
+      setState(() {
+        isEnabled = false;
+      });
+    }
+  }
+
   calibrateRateOnEditingComplete() {
     if (amountController.text.isNotEmpty &&
-        totalPriceController.text.isNotEmpty && rateController.text.isNotEmpty) {
+        totalPriceController.text.isNotEmpty &&
+        rateController.text.isNotEmpty) {
       if (calculateRate(double.parse(totalPriceController.text.toString()),
               double.parse(amountController.text.toString())) !=
           double.parse(rateController.text.toString())) {
@@ -72,7 +87,8 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
 
   calibrateRateOnTap() {
     if (amountController.text.isNotEmpty &&
-        totalPriceController.text.isNotEmpty && rateController.text.isNotEmpty) {
+        totalPriceController.text.isNotEmpty &&
+        rateController.text.isNotEmpty) {
       if (calculateRate(double.parse(totalPriceController.text.toString()),
               double.parse(amountController.text.toString())) !=
           double.parse(rateController.text.toString())) {
@@ -105,6 +121,7 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                   return null;
                 },
                 onChanged: (text) {
+                  changeSubmitButtonColor();
                   setState(() {});
                   if (amountController.text.isEmpty) {
                     rateController.text = "";
@@ -150,6 +167,7 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                   calibrateRateOnEditingComplete();
                 },
                 onChanged: (text) {
+                  changeSubmitButtonColor();
                   if (rateController.text.isEmpty) {
                     totalPriceController.text = "";
                   }
@@ -177,12 +195,12 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                             : Icon(
                                 Icons.remove,
                               ),
-                        onPressed: () async {
+                        onPressed: () {
                           setState(() {
+                            changeSubmitButtonColor();
                             // Here we're changing the icon.
                             isPositiveRate = !isPositiveRate;
                             rateController.text = "";
-                            // _focusNode.unfocus();
                             if (!_focusNode.hasFocus) {
                               _focusNode.canRequestFocus = false;
                             }
@@ -220,12 +238,11 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   ValidatorInputFormatter(
-                      editingValidator:
-                          // amountController.text.isEmpty ?
-                          TotalPriceEditingRegexValidator())
+                      editingValidator: TotalPriceEditingRegexValidator())
                 ],
                 controller: totalPriceController,
                 onChanged: (text) {
+                  changeSubmitButtonColor();
                   if (totalPriceController.text.isNotEmpty &&
                       amountController.text.isNotEmpty) {
                     if (double.parse(totalPriceController.text.toString()) >=
@@ -262,7 +279,9 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
               ),
               ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      backgroundColor: isEnabled
+                          ? MaterialStateProperty.all(Colors.green)
+                          : MaterialStateProperty.all(Colors.grey),
                       foregroundColor: MaterialStateProperty.all(Colors.white)),
                   onPressed: () {
                     firstSubmit = true;
