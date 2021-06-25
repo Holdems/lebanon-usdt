@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebanon_usdt/make_request_screen.dart';
+import 'package:lebanon_usdt/requests_screen.dart';
 import 'package:lebanon_usdt/test.dart';
 
 class RouteGenerator {
@@ -9,8 +10,8 @@ class RouteGenerator {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => MakeRequestScreen());
-      case '/test':
-        return MaterialPageRoute(builder: (_)=> MyApp());
+      case '/homeView':
+        return MaterialPageRoute(builder: (_)=>HomeScreen());
       //Passing arguments from screen to another
       // case '/merchantHomeScreen':
       //   return MaterialPageRoute(
