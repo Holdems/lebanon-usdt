@@ -7,23 +7,6 @@ import 'buy_requests_page.dart';
 class HomeScreen extends StatefulWidget {
   // final String token;
   // MerchantHomeScreen({Key key, @required this.token}) : super(key: key);
-  static const _actionTitles = ['Create Post', 'Upload Photo', 'Upload Video'];
-  void _showAction(BuildContext context, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(_actionTitles[index]),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('CLOSE'),
-            ),
-          ],
-        );
-      },
-    );
-  }
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -34,77 +17,95 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  int _currentIndex = 0;
   int _selectedIndex = 0;
-  PageController _pageController = PageController();
 
-  void _onPageChanged(int index) {
+  void _onItemTapped(int selectedIndex) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = selectedIndex;
     });
   }
 
-  void _onItemTapped(int selectedIndex) {
-    _pageController.jumpToPage(selectedIndex);
-    _currentIndex = selectedIndex;
-  }
-
-
+  static const List<Widget> _widgetOptions = <Widget>[
+    SellRequestsPage(),
+    BuyRequestsPage()
+  ];
 
   @override
   Widget build(BuildContext context) {
+    double screenSize = MediaQuery.of(context).size.width;
     return Scaffold(
-      floatingActionButton: ExpandableFab(distance: 112,children: [
-        ActionButton(
-          onPressed: () => widget._showAction(context, 0),
-          icon: const Icon(Icons.format_size),
-        ),
-        ActionButton(
-          onPressed: () => widget._showAction(context, 1),
-          icon: const Icon(Icons.insert_photo),
-        ),
-        ActionButton(
-          onPressed: () => widget._showAction(context, 2),
-          icon: const Icon(Icons.videocam),
-        ),
-      ],
-      ),floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      appBar: AppBar(
+          // shape: Border(bottom: BorderSide(color: Colors.orange, width: 20)),
+          bottom: PreferredSize(
+        child: Text('s'),
+        preferredSize: Size.fromHeight(20),
+      )),
+      floatingActionButton: ExpandableFab(
+        distance: 112,
+        children: [
+          ActionButton(
+              icon: const Icon(Icons.sell),
+              onPressed: () => Navigator.pushNamed(context, '/makeRequest',
+                  arguments: 'sell')),
+          ActionButton(
+              icon: const Icon(Icons.shopping_bag),
+              onPressed: () => Navigator.pushNamed(context, '/makeRequest',
+                  arguments: 'buy')),
+          // ActionButton(
+          //   onPressed: () => widget._showAction(context, 2),
+          //   icon: const Icon(Icons.videocam),
+          // ),
+        ],
+      ),
       drawer: Drawer(
         child: ListView(
           children: [
-            DrawerHeader(child: Text('Hello')),
-            ListTile(title: Text('A')),
-            ListTile(title: Text('B')),
+            DrawerHeader(
+              child: Text(''),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment(
+                      0.8, 0.0), // 10% of the width, so there are ten blinds.
+                  colors: <Color>[
+                    Color(0xff1cd0a3),
+                    Color(0xff36e786)
+                  ], // red to yellow
+                  tileMode:
+                      TileMode.repeated, // repeats the gradient over the canvas
+                ),
+              ),
+            ),
+            // ListTile(title: Text('Driver Menu')),
+            // ListTile(title: Text('B')),
+            SizedBox(height: 300),
+            TextButton(
+                onPressed: () {},
+                child: Text('Sign out', style: TextStyle(fontSize: 20))),
           ],
         ),
       ),
       backgroundColor: Colors.white,
-      body: PageView(
-        controller: _pageController,
-        children: <Widget>[
-          BuyRequestsPage(),
-          SellRequestsPage(),
-        ],
-        onPageChanged: _onPageChanged,
-        physics: NeverScrollableScrollPhysics(),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        backgroundColor: Colors.green,
+        currentIndex: _selectedIndex,
+        backgroundColor: Color(0xfff3f3f3),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.sell),
-            label: 'Sell',
+            label: 'Selling',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.shopping_bag,
             ),
-            label: 'Buy',
+            label: 'Buying',
           ),
         ],
         onTap: _onItemTapped,
-        selectedItemColor: Colors.amber,
+        selectedItemColor: Color(0xff1cd0a3),
       ),
     );
   }
