@@ -60,7 +60,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Stack(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.bottomRight,
         clipBehavior: Clip.none,
         children: [
           _buildTapToCloseFab(),
