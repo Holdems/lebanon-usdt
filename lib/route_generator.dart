@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebanon_usdt/make_request_screen.dart';
 import 'package:lebanon_usdt/requests_screen.dart';
-import 'package:lebanon_usdt/test.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -9,9 +8,10 @@ class RouteGenerator {
     final args = settings.arguments;
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => MakeRequestScreen());
-      case '/homeView':
-        return MaterialPageRoute(builder: (_)=>HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
+      case '/makeRequest':
+        var data = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => MakeRequestScreen(title: data));
       //Passing arguments from screen to another
       // case '/merchantHomeScreen':
       //   return MaterialPageRoute(
