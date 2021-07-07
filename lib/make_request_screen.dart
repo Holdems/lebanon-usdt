@@ -1,13 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:lebanon_usdt/validator.dart';
+import 'dart:convert';
 
-bool firstSubmit = false;
+import 'package:flutter/material.dart';
+import 'package:lebanon_usdt/models/request/buy_request.dart';
+import 'package:lebanon_usdt/services/api_services/post_sell_request_api.dart';
+import 'package:lebanon_usdt/services/api_services/put_buy_request_api.dart';
+import 'package:lebanon_usdt/validator.dart';
+import 'package:http/http.dart' as http;
+
 bool priceGotDeleted = false;
 bool isPositiveRate = true;
 bool isEnabled = false;
 AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
 class MakeRequestScreen extends StatefulWidget {
+  final String title;
+  const MakeRequestScreen({Key? key, required this.title}) : super(key: key);
   @override
   _MakeRequestScreenState createState() => _MakeRequestScreenState();
 }
@@ -78,9 +85,8 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
             .toStringAsFixed(2);
         FocusScope.of(context).unfocus();
       }
-    } else {
-      FocusScope.of(context).unfocus();
     }
+    FocusScope.of(context).unfocus();
   }
 
   calibrateRateOnTap() {
@@ -98,10 +104,25 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
     }
   }
 
+  void onPageEnter() {
+    priceGotDeleted = false;
+    isPositiveRate = true;
+    isEnabled = false;
+    autoValidateMode = AutovalidateMode.disabled;
+  }
+
+  @override
+  void initState() {
+    onPageEnter();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: (widget.title == "buy") ? Text("Buy") : Text("Sell"),
+      ),
       body: Container(
         margin: EdgeInsets.all(50),
         child: Form(
@@ -215,21 +236,18 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                 enabled: amountController.text.isNotEmpty ? true : false,
                 validator: (value) {
                   if (totalPriceController.text.isNotEmpty &&
-                      firstSubmit &&
                       double.parse(totalPriceController.text.toString()) >
                           (2 * double.parse(amountController.text))) {
+                    autoValidateMode = AutovalidateMode.onUserInteraction;
                     return "Keep the rate between\n-99.99 and +99.99";
                   }
-                  if (priceGotDeleted) {
+                  if (priceGotDeleted && totalPriceController.text.isEmpty) {
                     priceGotDeleted = false;
                     return "Keep the rate between\n-99.99 and +99.99";
                   }
+
                   if (value == null || value.isEmpty) {
                     return "Please enter some text";
-                  }
-                  if (double.parse(totalPriceController.text.toString()) >
-                      (2 * double.parse(amountController.text))) {
-                    return "Keep the rate between\n-99.99 and +99.99";
                   }
                   return null;
                 },
@@ -281,9 +299,24 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                           ? MaterialStateProperty.all(Colors.green)
                           : MaterialStateProperty.all(Colors.grey),
                       foregroundColor: MaterialStateProperty.all(Colors.white)),
-                  onPressed: () {
-                    firstSubmit = true;
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+
+                      String user= "William";
+                      int amount = int.parse(amountController.text);
+                      double rate =  isPositiveRate ?  double.parse(rateController.text) : -double.parse(rateController.text);
+                      int totalPrice = int.parse(totalPriceController.text);
+
+                      print(widget.title);
+                      if (widget.title == "sell") {
+
+                        postSr(user, amount, rate, totalPrice);
+
+                      } else if (widget.title == "buy") {
+
+                        postBr(user, amount, rate, totalPrice);
+
+                      }
                       print("success");
                     }
                     autoValidateMode = AutovalidateMode.onUserInteraction;
