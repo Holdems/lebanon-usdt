@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab(
       {Key? key,
-      this.initialOpen,
-      required this.distance,
-      required this.children})
+        this.initialOpen,
+        required this.distance,
+        required this.children})
       : super(key: key);
   final bool? initialOpen;
   final double distance;
@@ -60,7 +60,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Stack(
-        alignment: Alignment.bottomRight,
+        alignment: Alignment.bottomCenter,
         clipBehavior: Clip.none,
         children: [
           _buildTapToCloseFab(),
@@ -76,8 +76,8 @@ class _ExpandableFabState extends State<ExpandableFab>
     final count = widget.children.length;
     final step = 90.0 / (count - 1);
     for (var i = 0, angleInDegrees = 0.0;
-        i < count;
-        i++, angleInDegrees += step) {
+    i < count;
+    i++, angleInDegrees += step) {
       children.add(
         _ExpandingActionButton(
           directionInDegrees: angleInDegrees,
@@ -120,7 +120,7 @@ class _ExpandableFabState extends State<ExpandableFab>
       child: AnimatedContainer(
         transformAlignment: Alignment.center,
         transform:
-            Matrix4.diagonal3Values(_open ? 0.7 : 1.0, _open ? 0.7 : 1.0, 1.0),
+        Matrix4.diagonal3Values(_open ? 0.7 : 1.0, _open ? 0.7 : 1.0, 1.0),
         duration: const Duration(milliseconds: 250),
         curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
         child: AnimatedOpacity(
@@ -128,9 +128,8 @@ class _ExpandableFabState extends State<ExpandableFab>
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
-            backgroundColor: Color(0xfff3f3f3),
             onPressed: _toggle,
-            child: const Icon(Icons.create,color: Color(0xff1cd0a3),),
+            child: const Icon(Icons.create),
           ),
         ),
       ),

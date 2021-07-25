@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lusdt/validator.dart';
+import 'validator.dart';
 
 class Home extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -355,7 +355,7 @@ class Home extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushReplacementNamed(
                         context,
-                        '/',
+                        '/login',
                       );
                     },
                     child: Text(
