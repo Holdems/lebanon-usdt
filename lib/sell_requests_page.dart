@@ -4,6 +4,12 @@ import 'package:lebanon_usdt/models/request/sell_request.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+final ScrollController _scrollController = ScrollController();
+
+scrollToMin() {
+  _scrollController.animateTo(_scrollController.position.minScrollExtent,
+      duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+}
 
 int s = 0;
 
@@ -16,7 +22,8 @@ class SellRequestsPage extends StatefulWidget {
 
 class _SellRequestsPageState extends State<SellRequestsPage> {
   // https://lebanon-usdt.azurewebsites.net/sr/
-
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
   Future<List<SellRequest>> getSellRequests() async {
     var url = Uri.parse('https://lebanon-usdt.azurewebsites.net/sr/');
     http.Response response = await http.get(url, headers: {
@@ -37,66 +44,146 @@ class _SellRequestsPageState extends State<SellRequestsPage> {
       );
       requests.add(_request);
     }
+
     print(requests);
     return requests;
   }
 
-
   @override
   Widget build(BuildContext context) {
-    s+=1;
+    s += 1;
     print("s is now $s");
     return Container(
       child: FutureBuilder(
           future: getSellRequests(),
-          builder: (BuildContext context, AsyncSnapshot snapshot){
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return Container(
                 child: Center(
                     child: SpinKitCircle(
-                      color: Colors.lightBlueAccent,
-                    )),
+                  color: Colors.lightBlueAccent,
+                )),
               );
-            }
-            else {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index){
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Card(
-                              color: Colors.lightBlueAccent,
-                              shadowColor: Colors.blueAccent,
-                              child: ExpansionTile(
-                                leading: Text("Selling"),
-                                title: Text("100 USDT\nBeirut"),
-                                subtitle: Text("+ 1.6%"),
-                                // trailing: Text("s"),
-                                children: [
-                                  Text("Hello"),
-                                  Text("ss"),
-                                  Row(mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                    ElevatedButton(onPressed: (){}, child: Row(
+            } else {
+              return RefreshIndicator(
+                key: _refreshIndicatorKey,
+                onRefresh: () {
+                  return getSellRequests().then((request) {
+                    setState(() => null);
+                  });
+                },
+                child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                color: Color(0xd91cd0a3),
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                      dividerColor: Colors.transparent),
+                                  child: ExpansionTile(
+                                    leading: CircleAvatar(
+                                      backgroundColor: Color(0xfff3f3f3),
+                                      child: Icon(
+                                        Icons.sell,
+                                        color: Color(0xd91cd0a3),
+                                      ),
+                                    ),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Icon(Icons.chat),
-                                        Text(" Message on WhatsApp"),
+                                        Text(
+                                          "${snapshot.data[index].amount} USDT",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        snapshot.data[index].rate <= 0
+                                            ? Text(
+                                                "${snapshot.data[index].rate.toString()}%",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16),
+                                              )
+                                            : Text(
+                                                "+${snapshot.data[index].rate}%",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16),
+                                              ),
                                       ],
-                                    ))
-                                  ],)
-                                ],
-                              )
+                                    ),
+                                    subtitle: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Beirut",
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        Text(
+                                          "Total Price: \$${snapshot.data[index].totalPrice.toString()}",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        )
+                                      ],
+                                    ),
+                                    // trailing: Text("s"),
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          "${snapshot.data[index].username.toString()}",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
+                                        leading: CircleAvatar(
+                                          backgroundColor: Color(0xfff3f3f3),
+                                          foregroundImage: AssetImage(
+                                              'assets/images/portrait.png'),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ElevatedButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Color(0xfff3f3f3))),
+                                              onPressed: () {},
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/whatsapp.png',
+                                                    scale: 35,
+                                                  ),
+                                                  Text(
+                                                    " Message on WhatsApp",
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ],
+                                              ))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )),
                           ),
-                        )
-                      ],
-                    );
-                  }
+                        ],
+                      );
+                    }),
               );
             }
-          }
-      ),
+          }),
     );
   }
 }
