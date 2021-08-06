@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:lebanon_usdt/colors.dart';
 
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab(
@@ -96,6 +97,7 @@ class _ExpandableFabState extends State<ExpandableFab>
       height: 56.0,
       child: Center(
         child: Material(
+          color: secondaryColor,
           shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
           elevation: 4.0,
@@ -105,7 +107,7 @@ class _ExpandableFabState extends State<ExpandableFab>
               padding: const EdgeInsets.all(8.0),
               child: Icon(
                 Icons.close,
-                color: Theme.of(context).primaryColor,
+                color: primaryColor,
               ),
             ),
           ),
@@ -128,9 +130,9 @@ class _ExpandableFabState extends State<ExpandableFab>
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
-            backgroundColor: Color(0xfff3f3f3),
+            backgroundColor: secondaryColor,
             onPressed: _toggle,
-            child: const Icon(Icons.create,color: Color(0xff1cd0a3),),
+            child: const Icon(Icons.create,color: primaryColor,),
           ),
         ),
       ),
@@ -154,7 +156,7 @@ class _ActionButtonState extends State<ActionButton> {
     return Material(
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
-      color: theme.accentColor,
+      color: primaryColor,
       elevation: 4.0,
       child: IconTheme.merge(
           data: theme.accentIconTheme,
