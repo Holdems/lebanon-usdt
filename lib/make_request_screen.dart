@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:lebanon_usdt/colors.dart';
 import 'package:lebanon_usdt/models/request/buy_request.dart';
 import 'package:lebanon_usdt/services/api_services/post_sell_request_api.dart';
 import 'package:lebanon_usdt/services/api_services/put_buy_request_api.dart';
 import 'package:lebanon_usdt/validator.dart';
 import 'package:http/http.dart' as http;
 
+String responseMessage = "";
 bool priceGotDeleted = false;
 bool isPositiveRate = true;
 bool isEnabled = false;
@@ -117,11 +119,38 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
     super.initState();
   }
 
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+              margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  final style = TextStyle(color: Colors.grey);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: (widget.title == "buy") ? Text("Buy") : Text("Sell"),
+        iconTheme: IconThemeData(color: Colors.grey),
+        backgroundColor: secondaryColor,
+        title: (widget.title == "buy")
+            ? Text("Buy", style: TextStyle(color: Colors.grey[800]))
+            : Text(
+                "Sell",
+                style: style,
+              ),
       ),
       body: Container(
         margin: EdgeInsets.all(50),
@@ -173,62 +202,74 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                     labelText: "Amount in USDT"),
               ),
               //Rate
-              TextFormField(
-                validator: (value) {
-                  if (value == null ||
-                      value.isEmpty ||
-                      (double.parse(rateController.text) > 99.99)) {
-                    return "Please enter a rate between\n-99.99% and +99.99%";
-                  }
-                  return null;
-                },
-                onEditingComplete: () {
-                  calibrateRateOnEditingComplete();
-                },
-                onChanged: (text) {
-                  if (rateController.text.isEmpty) {
-                    totalPriceController.text = "";
-                  }
-                  if (amountController.text.isNotEmpty &&
-                      rateController.text.isNotEmpty) {
-                    totalPriceController.text = calculatePrice(
-                            double.parse(amountController.text),
-                            double.parse(rateController.text))
-                        .round()
-                        .toString();
-                  }
-                  changeSubmitButtonColor();
-                },
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  ValidatorInputFormatter(
-                      editingValidator: DecimalNumberEditingRegexValidator())
-                ],
-                controller: rateController,
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                    suffixText: "%",
-                    prefixIcon: IconButton(
-                        icon: isPositiveRate
-                            ? Icon(Icons.add)
-                            : Icon(
-                                Icons.remove,
-                              ),
-                        onPressed: () {
-                          setState(() {
-                            // Here we're changing the icon.
-                            isPositiveRate = !isPositiveRate;
-                            rateController.text = "";
-                            if (!_focusNode.hasFocus) {
-                              _focusNode.canRequestFocus = false;
-                            }
-                          });
-                          changeSubmitButtonColor();
-                        }),
-                    icon: Icon(Icons.rate_review),
-                    hintText: "e.g: 3, -1.5",
-                    border: OutlineInputBorder(),
-                    labelText: "Rate"),
+              Theme(
+                data: new ThemeData(
+                  primaryColor: Colors.redAccent,
+                  primaryColorDark: Colors.red,
+                ),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        (double.parse(rateController.text) > 99.99)) {
+                      return "Please enter a rate between\n-99.99% and +99.99%";
+                    }
+                    return null;
+                  },
+                  onEditingComplete: () {
+                    calibrateRateOnEditingComplete();
+                  },
+                  onChanged: (text) {
+                    if (rateController.text.isEmpty) {
+                      totalPriceController.text = "";
+                    }
+                    if (amountController.text.isNotEmpty &&
+                        rateController.text.isNotEmpty) {
+                      totalPriceController.text = calculatePrice(
+                              double.parse(amountController.text),
+                              double.parse(rateController.text))
+                          .round()
+                          .toString();
+                    }
+                    changeSubmitButtonColor();
+                  },
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    ValidatorInputFormatter(
+                        editingValidator: DecimalNumberEditingRegexValidator())
+                  ],
+                  controller: rateController,
+                  focusNode: _focusNode,
+                  decoration: InputDecoration(
+                      suffixText: "%",
+                      prefixIcon: IconButton(
+                          icon: isPositiveRate
+                              ? Icon(Icons.add)
+                              : Icon(
+                                  Icons.remove,
+                                ),
+                          onPressed: () {
+                            setState(() {
+                              // Here we're changing the icon.
+                              isPositiveRate = !isPositiveRate;
+                              rateController.text = "";
+                              if (!_focusNode.hasFocus) {
+                                _focusNode.canRequestFocus = false;
+                              }
+                            });
+                            changeSubmitButtonColor();
+                          }),
+                      icon: Icon(Icons.rate_review),
+                      hintText: "e.g: 3, -1.5",
+                      border: OutlineInputBorder(),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                      ),
+                      // focusedBorder: const OutlineInputBorder(
+                      //   borderSide: const BorderSide(color: primaryColor,width: 2),
+                      // ),
+                      labelText: "Rate"),
+                ),
               ),
 
               //TotalPrice
@@ -286,8 +327,12 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                 onTap: () {
                   calibrateRateOnTap();
                 },
+
                 decoration: InputDecoration(
-                    icon: Icon(Icons.monetization_on),
+                  focusColor: Colors.green,
+                    fillColor: Colors.green,
+                    hoverColor: Colors.green,
+                    icon: Icon(Icons.monetization_on,color: primaryColor,),
                     suffixIcon: Icon(Icons.shopping_bag),
                     hintText: "e.g: 400",
                     border: OutlineInputBorder(),
@@ -296,26 +341,49 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
               ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: isEnabled
-                          ? MaterialStateProperty.all(Colors.green)
+                          ? MaterialStateProperty.all(primaryColor)
                           : MaterialStateProperty.all(Colors.grey),
                       foregroundColor: MaterialStateProperty.all(Colors.white)),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-
-                      String user= "William";
+                      showLoaderDialog(context);
+                      String user = "William";
                       int amount = int.parse(amountController.text);
-                      double rate =  isPositiveRate ?  double.parse(rateController.text) : -double.parse(rateController.text);
+                      double rate = isPositiveRate
+                          ? double.parse(rateController.text)
+                          : -double.parse(rateController.text);
                       int totalPrice = int.parse(totalPriceController.text);
 
                       print(widget.title);
                       if (widget.title == "sell") {
+                        http.Response response =
+                            await postSr(user, amount, rate, totalPrice);
 
-                        postSr(user, amount, rate, totalPrice);
+                        if (response.statusCode == 201) {
+                          Navigator.pop(context);
+                          responseMessage = "Success!";
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              // action: SnackBarAction(
+                              //   label: 'Action',
+                              //   onPressed: () {
+                              //     // Code to execute.
+                              //   },
+                              // ),
+                              content: Text('$responseMessage'),
+                              duration: const Duration(milliseconds: 1500),
+                              width: 280.0, // Width of the SnackBar.
+                              padding: const EdgeInsets.symmetric(
+                                horizontal:
+                                    8.0, // Inner padding for SnackBar content.
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )));
 
+                        } else {}
                       } else if (widget.title == "buy") {
-
                         postBr(user, amount, rate, totalPrice);
-
                       }
                       print("success");
                     }
