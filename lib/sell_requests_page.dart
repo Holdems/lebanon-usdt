@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lebanon_usdt/colors.dart';
 import 'package:lebanon_usdt/models/request/sell_request.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -61,7 +62,7 @@ class _SellRequestsPageState extends State<SellRequestsPage> {
               return Container(
                 child: Center(
                     child: SpinKitCircle(
-                  color: Colors.lightBlueAccent,
+                  color: primaryColor,
                 )),
               );
             } else {
@@ -84,16 +85,16 @@ class _SellRequestsPageState extends State<SellRequestsPage> {
                             child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
-                                color: Color(0xd91cd0a3),
+                                color: primaryColor,
                                 child: Theme(
                                   data: Theme.of(context).copyWith(
                                       dividerColor: Colors.transparent),
                                   child: ExpansionTile(
                                     leading: CircleAvatar(
-                                      backgroundColor: Color(0xfff3f3f3),
+                                      backgroundColor: secondaryColor,
                                       child: Icon(
                                         Icons.sell,
-                                        color: Color(0xd91cd0a3),
+                                        color: primaryColor,
                                       ),
                                     ),
                                     title: Row(
@@ -144,7 +145,7 @@ class _SellRequestsPageState extends State<SellRequestsPage> {
                                               fontSize: 16),
                                         ),
                                         leading: CircleAvatar(
-                                          backgroundColor: Color(0xfff3f3f3),
+                                          backgroundColor: secondaryColor,
                                           foregroundImage: AssetImage(
                                               'assets/images/portrait.png'),
                                         ),
@@ -157,7 +158,7 @@ class _SellRequestsPageState extends State<SellRequestsPage> {
                                               style: ButtonStyle(
                                                   backgroundColor:
                                                       MaterialStateProperty.all(
-                                                          Color(0xfff3f3f3))),
+                                                          secondaryColor)),
                                               onPressed: () {},
                                               child: Row(
                                                 children: [
