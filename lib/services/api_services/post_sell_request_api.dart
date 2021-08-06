@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-postSr(
+Future<http.Response> postSr(
   String user,
   int amount,
   double rate,
@@ -18,4 +19,5 @@ postSr(
   http.Response responseSrPost = await http.post(uriPostSellReq,
       body: postSrBodyJson, headers: {"content-type": "application/json"});
   print(responseSrPost.statusCode);
+  return responseSrPost;
 }
