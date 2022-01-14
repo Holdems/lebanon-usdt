@@ -252,10 +252,8 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                             setState(() {
                               // Here we're changing the icon.
                               isPositiveRate = !isPositiveRate;
-                              rateController.text = "";
-                              if (!_focusNode.hasFocus) {
-                                _focusNode.canRequestFocus = false;
-                              }
+                              rateController.clear();
+                              _focusNode.requestFocus();
                             });
                             changeSubmitButtonColor();
                           }),
@@ -263,7 +261,8 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                       hintText: "e.g: 3, -1.5",
                       border: OutlineInputBorder(),
                       enabledBorder: const OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                        borderSide:
+                            const BorderSide(color: Colors.grey, width: 0.0),
                       ),
                       // focusedBorder: const OutlineInputBorder(
                       //   borderSide: const BorderSide(color: primaryColor,width: 2),
@@ -327,12 +326,11 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                 onTap: () {
                   calibrateRateOnTap();
                 },
-
                 decoration: InputDecoration(
-                  focusColor: Colors.green,
-                    fillColor: Colors.green,
-                    hoverColor: Colors.green,
-                    icon: Icon(Icons.monetization_on,color: primaryColor,),
+                    icon: Icon(
+                      Icons.monetization_on,
+                      color: primaryColor,
+                    ),
                     suffixIcon: Icon(Icons.shopping_bag),
                     hintText: "e.g: 400",
                     border: OutlineInputBorder(),
@@ -380,7 +378,6 @@ class _MakeRequestScreenState extends State<MakeRequestScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               )));
-
                         } else {}
                       } else if (widget.title == "buy") {
                         postBr(user, amount, rate, totalPrice);
