@@ -7,7 +7,7 @@ import 'package:lebanon_usdt/requests_screen.dart';
 import 'package:lebanon_usdt/screens/login/login_screen.dart';
 import 'package:lebanon_usdt/screens/signup/signup_screen.dart';
 import 'package:lebanon_usdt/screens/welcome/welcome_screen.dart';
-import 'package:lebanon_usdt/test.dart';
+import 'package:lebanon_usdt/components/shimmer_effect_requests.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -35,7 +35,9 @@ class RouteGenerator {
       case '/filter':
         return MaterialPageRoute(builder: (_) => Filter());
       case '/test':
-        return MaterialPageRoute(builder: (_) => Test());
+        return MaterialPageRoute(builder: (_) => CircleListItem());
+      case '/loadShimmer':
+        return MaterialPageRoute(builder: (_)=>LoadShimmer());
       //Passing arguments from screen to another
       // case '/merchantHomeScreen':
       //   return MaterialPageRoute(

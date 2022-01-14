@@ -24,8 +24,8 @@ class CircleListItem extends StatelessWidget {
   }
 }
 
-class Test extends StatelessWidget {
-  const Test({Key? key}) : super(key: key);
+class LoadShimmer extends StatelessWidget {
+  const LoadShimmer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
