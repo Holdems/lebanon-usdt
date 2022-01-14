@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lebanon_usdt/filter.dart';
-import 'package:lebanon_usdt/home.dart';
 import 'package:lebanon_usdt/login.dart';
 import 'package:lebanon_usdt/make_request_screen.dart';
 import 'package:lebanon_usdt/requests_screen.dart';
@@ -28,8 +27,6 @@ class RouteGenerator {
         var data = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => MakeRequestScreen(title: data));
-      case '/home':
-        return MaterialPageRoute(builder: (_) => Home());
       case '/login':
         return MaterialPageRoute(builder: (_) => Login());
       case '/filter':
