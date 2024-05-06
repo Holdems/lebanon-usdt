@@ -27,7 +27,7 @@ Lebanon USDT is a cross-platform Flutter application is designed to simplify and
 
 ### Buy and Sell USDT Screens
 
-| Home Screen | Home Screen | Buy/Sell Validation |
+| Home Screen | Home Screen | Buy / Sell Form |
 |:------------:|:--------------:|:-----------------:|
 | <img src="https://github.com/Holdems/lebanon-usdt/assets/69801237/896dd0e0-963b-46ae-9fbd-1853a1c95cec" width="300"> | <img src="https://github.com/Holdems/lebanon-usdt/assets/69801237/0fe4a45c-3120-437e-8f16-f99c3a4c4a38" width="300"> | <img src="https://github.com/Holdems/lebanon-usdt/assets/69801237/f3f64980-2801-4cbc-abd6-cf738ba485d3" width="300"> |
 
